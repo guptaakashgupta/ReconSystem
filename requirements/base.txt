@@ -6,3 +6,6 @@ psycopg2==2.5.4
 
 # Time zones support
 pytz==2014.7
+
+# django import or export data module
+django-import-export
