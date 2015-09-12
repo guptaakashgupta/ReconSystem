@@ -1,5 +1,7 @@
 from django.contrib import admin
 from models import Order
+from models import Payment
+from models import Return
 from django.http import HttpResponse
 
 from import_export.admin import ImportExportModelAdmin
@@ -11,6 +13,19 @@ class OrderResource(resources.ModelResource):
         model=Order
         import_id_fields = ('order_number',)
         exclude=('id',)
+
+class PaymentResource(resources.ModelResource):
+    class Meta:
+        model=Payment
+        import_id_fields = ('order_number',)
+        exclude=('id',)
+
+class ReturnResource(resources.ModelResource):
+    class Meta:
+        model=Return
+        import_id_fields = ('order_number',)
+        exclude=('id',)
+
 
 # Register your models here.
 class OrderAdmin(ImportExportModelAdmin,ImportExportActionModelAdmin,admin.ModelAdmin):
@@ -74,5 +89,93 @@ class OrderAdmin(ImportExportModelAdmin,ImportExportActionModelAdmin,admin.Model
     export_csv.short_description = u"Export as CSV including Net Amount"
 
 
+class PaymentAdmin(ImportExportModelAdmin,ImportExportActionModelAdmin,admin.ModelAdmin):
+    model=Payment
+    date_hierarchy = 'pay_date'
+    list_display = ('channel','pay_date','order_number','item','quantity','payment_amount')
+    list_display_links = ('order_number',)
+    list_filter = ('channel',)
+    ordering = ('pay_date',)
+    search_fields = ('channel','pay_date','order_number','item','payment_amount')
+    actions = ['export_csv']
+
+    resource_class = PaymentResource
+
+    def export_csv(self, request, queryset):
+        import csv
+        from django.utils.encoding import smart_str
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=payment.csv'
+        writer = csv.writer(response, csv.excel)
+        response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+        writer.writerow([
+            smart_str(u"ID"),
+            smart_str(u"channel"),
+            smart_str(u"pay_date"),
+            smart_str(u"order_number"),
+            smart_str(u"item"),
+            smart_str(u"quantity"),
+            smart_str(u"payment_amount"),
+        ])
+        for obj in queryset:
+            writer.writerow([
+                smart_str(obj.pk),
+                smart_str(obj.channel),
+                smart_str(obj.pay_date),
+                smart_str(obj.order_number),
+                smart_str(obj.item),
+                smart_str(obj.quantity),
+                smart_str(obj.payment_amount)
+            ])
+        return response
+    export_csv.short_description = u"Export as CSV"
+
+class ReturnAdmin(ImportExportModelAdmin,ImportExportActionModelAdmin,admin.ModelAdmin):
+    model=Order
+    date_hierarchy = 'return_date'
+    list_display = ('channel','return_date','order_number','item','quantity','condition','return_amount')
+    list_display_links = ('order_number',)
+    list_filter = ('channel',)
+    ordering = ('return_date',)
+    search_fields = ('channel','return_date','order_number','item','condition','return_amount')
+    actions = ['export_csv']
+
+    resource_class = ReturnResource
+
+    def export_csv(self, request, queryset):
+        import csv
+        from django.utils.encoding import smart_str
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=return.csv'
+        writer = csv.writer(response, csv.excel)
+        response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+        writer.writerow([
+            smart_str(u"ID"),
+            smart_str(u"channel"),
+            smart_str(u"return_date"),
+            smart_str(u"order_number"),
+            smart_str(u"item"),
+            smart_str(u"quantity"),
+            smart_str(u"condition"),
+            smart_str(u"return_amount"),
+        ])
+        for obj in queryset:
+            writer.writerow([
+                smart_str(obj.pk),
+                smart_str(obj.channel),
+                smart_str(obj.return_date),
+                smart_str(obj.order_number),
+                smart_str(obj.item),
+                smart_str(obj.quantity),
+                smart_str(obj.condition),
+                smart_str(obj.return_amount)
+            ])
+        return response
+    export_csv.short_description = u"Export as CSV"
+
+
+
 
 admin.site.register(Order,OrderAdmin)
+admin.site.register(Payment,PaymentAdmin)
+admin.site.register(Return,ReturnAdmin)

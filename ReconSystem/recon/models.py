@@ -33,5 +33,44 @@ class Order(models.Model):
     def __str__(self):
         return self.channel+'    '+self.order_number+'    '+self.item+'    '+str(self.sale_date)
 
+class Payment(models.Model):
+    CHANNEL_CHOICES= (
+        ('amazon', 'amazon'),
+        ('paytm', 'paytm'),
+        ('snapdeal', 'snapdeal'),
+        ('flipkart', 'flipkart'),
+        ('ebay', 'ebay'),
+    )
+    channel=models.CharField(max_length=20,choices=CHANNEL_CHOICES)
+    pay_date=models.DateField()
+    order_number=models.CharField(max_length=200,unique=True)
+    item=models.TextField(max_length=1000)
+    quantity=models.PositiveIntegerField()
+    payment_amount=models.FloatField()
+
+class Return(models.Model):
+    CHANNEL_CHOICES= (
+        ('amazon', 'amazon'),
+        ('paytm', 'paytm'),
+        ('snapdeal', 'snapdeal'),
+        ('flipkart', 'flipkart'),
+        ('ebay', 'ebay'),
+    )
+    CONDITION_CHOICES= (
+        ('good','good'),
+        ('damaged','damaged')
+    )
+    channel=models.CharField(max_length=20,choices=CHANNEL_CHOICES)
+    return_date=models.DateField()
+    order_number=models.CharField(max_length=200,unique=True)
+    item=models.TextField(max_length=1000)
+    quantity=models.PositiveIntegerField()
+    condition=models.CharField(max_length=20,choices=CONDITION_CHOICES)
+    return_amount=models.FloatField()
+
+
+
+
+
 
 
