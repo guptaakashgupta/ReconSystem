@@ -1,0 +1,48 @@
+{% load staticfiles i18n %}<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}recon{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+  </head>
+
+  <body>
+
+    <form action="/index" method="GET">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="submit"/>
+    </form>
+
+    <table border="1" >
+    <tr>
+        <th>Channel</th>
+        <th>Order_Number</th>
+        <th>Sale Date</th>
+    </tr>
+    {% for order_list in order_detail %}
+        <tr>
+        <td>{{ order_list.channel }}</td>
+        <td>{{ order_list.order_number }}</td>
+        <td>{{ order_list.sale_date }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+   {% block footer%}
+   <br/>
+   <hr/>
+   <p align="center">&copy; Recon 2015</p>
+   {% endblock footer %}
+
+
+
+  </body>
+
+
+</html>
+ 

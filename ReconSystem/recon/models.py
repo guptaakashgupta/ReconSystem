@@ -25,7 +25,10 @@ class Order(models.Model):
     payment_collection_fee=models.FloatField()
 
     def _net_receivable(self):
-        net_amount=self.sale_price - ( self.sale_price*((self.market_fee+self.logistic_fee+self.payment_collection_fee)*self.sale_tax_rate))
+        net_amount=self.sale_price - (
+            self.sale_price*
+            ((self.market_fee+self.logistic_fee+self.payment_collection_fee)*self.sale_tax_rate)
+        )
         return net_amount
 
     net_amount=property(_net_receivable)
@@ -48,6 +51,9 @@ class Payment(models.Model):
     quantity=models.PositiveIntegerField()
     payment_amount=models.FloatField()
 
+    def __str__(self):
+        return self.channel+' '+self.order_number+' '+self.item+' '+str(self.pay_date)
+
 class Return(models.Model):
     CHANNEL_CHOICES= (
         ('amazon', 'amazon'),
@@ -68,7 +74,8 @@ class Return(models.Model):
     condition=models.CharField(max_length=20,choices=CONDITION_CHOICES)
     return_amount=models.FloatField()
 
-
+    def __str__(self):
+        return self.channel+' '+self.order_number+' '+self.item+' '+str(self.return_date)
 
 
 
