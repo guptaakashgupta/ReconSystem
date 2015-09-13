@@ -18,17 +18,31 @@
         <input type="submit" value="submit"/>
     </form>
 
+    <br>
+    <br>
+    <hr>
+
+
     <table border="1" >
+    <caption>Orders whose Payment still pending</caption>
     <tr>
         <th>Channel</th>
-        <th>Order_Number</th>
         <th>Sale Date</th>
+        <th>Order Number</th>
+        <th>Invoice Number</th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Net Amount</th>
     </tr>
     {% for order_list in order_detail %}
         <tr>
         <td>{{ order_list.channel }}</td>
-        <td>{{ order_list.order_number }}</td>
         <td>{{ order_list.sale_date }}</td>
+        <td>{{ order_list.order_number }}</td>
+        <td>{{ order_list.invoice_number}}</td>
+        <td>{{ order_list.item }}</td>
+        <td>{{ order_list.quantity }}</td>
+        <td>{{ order_list.net_amount }}</td>
         </tr>
     {% endfor %}
     </table>

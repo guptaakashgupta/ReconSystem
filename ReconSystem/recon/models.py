@@ -31,7 +31,7 @@ class Order(models.Model):
         )
         return net_amount
 
-    net_amount=property(_net_receivable)
+    net_amount=models.FloatField(default=0)
 
     def __str__(self):
         return self.channel+'    '+self.order_number+'    '+self.item+'    '+str(self.sale_date)
