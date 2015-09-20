@@ -47,6 +47,37 @@
     {% endfor %}
     </table>
 
+    <hr>
+
+    <table border="1" >
+    <caption>Orders whose Payment Mismatches</caption>
+    <tr>
+        <th>Channel</th>
+        <th>Sale Date</th>
+        <th>Order Number</th>
+        <th>Invoice Number</th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Net Amount</th>
+        <th>Pay Date</th>
+        <th>Payment Amount</th>
+    </tr>
+
+    {% for mismatch_list in order_mismatch %}
+        <tr>
+        <td>{{ mismatch_list.channel }}</td>
+        <td>{{ mismatch_list.sale_date }}</td>
+        <td>{{ mismatch_list.order_number }}</td>
+        <td>{{ mismatch_list.invoice_number}}</td>
+        <td>{{ mismatch_list.item }}</td>
+        <td>{{ mismatch_list.quantity }}</td>
+        <td>{{ mismatch_list.net_amount }}</td>
+        <td>{{ mismatch_list.pay_date }}</td>
+        <td>{{ mismatch_list.payment_amount }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
    {% block footer%}
    <br/>
    <hr/>

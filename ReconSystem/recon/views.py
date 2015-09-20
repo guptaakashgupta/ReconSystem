@@ -22,17 +22,34 @@ def index_view(request):
 
         #order_info=Order.objects.filter(sale_date__year=start_date_year)
         cursor=connection.cursor()
+        condition='good'
 
-        cursor.execute('SELECT a.channel,a.order_number,a.sale_date,a.net_amount,a.invoice_number,a.item,a.quantity,'
-                       'b.pay_date,b.payment_amount '
-                       'FROM recon_order as a LEFT OUTER JOIN recon_payment as b '
-                       'ON a.order_number=b.order_number '
-                       'WHERE b.order_number is null AND '
-                       'a.sale_date BETWEEN %s AND %s ',[start_date,end_date])
+        cursor.execute('SELECT c.return_date,c.condition,c.return_amount,'
+                       'd.channel,d.order_number,d.net_amount, '
+                       'd.sale_date,d.invoice_number,d.item,d.quantity '
+                       'FROM recon_return c RIGHT OUTER JOIN '
+                       '(SELECT a.channel,a.order_number,a.sale_date,a.net_amount,a.invoice_number,a.item,a.quantity '
+                       'FROM recon_order as a LEFT OUTER JOIN recon_payment as b  '
+                       'ON a.order_number=b.order_number  '
+                       'WHERE b.order_number is null )  d '
+                       ' ON c.order_number=d.order_number '
+                       'WHERE c.condition<>%s OR c.condition is null AND '
+                        'd.sale_date BETWEEN %s AND %s ',[condition,start_date,end_date])
+
 
         order_payment_pending=dictfetchall(cursor)
+
+        cursor.execute('SELECT a.channel,a.order_number,a.sale_date,a.net_amount,a.invoice_number,'
+                       'a.item,a.quantity,b.pay_date,b.payment_amount '
+                       'FROM recon_order a,recon_payment b '
+                       'WHERE a.order_number=b.order_number AND '
+                       'a.net_amount<>b.payment_amount AND '
+                       'a.sale_date BETWEEN %s AND %s ',[start_date,end_date])
+
+        order_payment_mismatch=dictfetchall(cursor)
         order_data= {
             "order_detail":order_payment_pending,
+            "order_mismatch":order_payment_mismatch,
             "form":form
         }
         return render(request,'base.html',order_data)
