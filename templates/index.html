@@ -18,7 +18,7 @@
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{% static  'css/starter-template.css' %}" rel="stylesheet">
+    <link href="{% static  'css/index.css' %}" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -56,19 +56,19 @@
 
     <div class="container">
 
-      <form action="/" method="GET" class="form-horizontal">
-        {% csrf_token %}
-          <div class="form-group">
-              {{ form|crispy }}
-          </div>
-        <div class="form-group">
-            <div class="">
-                <input type="submit" class="btn btn-primary" value="Submit"/>
+        <div class="forminput">
+          <form action="/" method="GET" class="">
+            {% csrf_token %}
+              <div class="form-group">
+                  {{ form|crispy }}
+              </div>
+            <div class="form-group">
+                <div class="">
+                    <input type="submit" class="btn btn-primary" value="Submit"/>
+                </div>
             </div>
+          </form>
         </div>
-      </form>
-
-    <hr>
 
 
     <table class="table table-bordered table-striped" >
@@ -94,8 +94,7 @@
         </tr>
     {% endfor %}
     </table>
-
-    <hr>
+    
 
     <table class="table table-bordered table-striped" >
     <caption><h3 class="text-capitalize"><u>Orders whose Payment Mismatches</u></h3></caption>
