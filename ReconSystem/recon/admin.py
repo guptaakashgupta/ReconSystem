@@ -12,7 +12,17 @@ class OrderResource(resources.ModelResource):
     class Meta:
         model=Order
         import_id_fields = ('order_number',)
-        exclude=('id',)
+        exclude=('id','net_amount')
+
+    def after_save_instance(self,instance,dry_run):
+        if not dry_run:
+            obj=Order.objects.get(order_number=instance.order_number)
+            obj.net_amount=float(instance.sale_price)-(float((float(instance.sale_price)*
+                                                ((float(instance.market_fee)+float(instance.payment_collection_fee))
+                                                 /100))) +
+                                                float(instance.logistic_fee))
+            obj.save()
+
 
 class PaymentResource(resources.ModelResource):
     class Meta:

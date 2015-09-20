@@ -14,15 +14,14 @@ class Order(models.Model):
     order_number=models.CharField(max_length=200,unique=True)
     invoice_number=models.CharField(max_length=200,unique=True)
     item=models.TextField(max_length=1000)
-    quantity=models.PositiveIntegerField()
+    quantity=models.PositiveIntegerField(default=1)
     customer_name=models.CharField(max_length=200)
     customer_city=models.CharField(max_length=200)
-    base_price=models.FloatField()
     sale_tax_rate=models.FloatField()
     sale_price=models.FloatField()
-    market_fee=models.FloatField()
-    logistic_fee=models.FloatField()
-    payment_collection_fee=models.FloatField()
+    market_fee=models.FloatField(default=0)
+    logistic_fee=models.FloatField(default=0)
+    payment_collection_fee=models.FloatField(default=0)
 
     def _net_receivable(self):
         net_amount=self.sale_price - (
